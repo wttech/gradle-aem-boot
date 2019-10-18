@@ -4,24 +4,6 @@ import com.neva.gradle.fork.ForkExtension
 configure<ForkExtension> {
     properties {
         define(mapOf(
-                "targetPath" to {
-                    description = "Forked project destination path"
-                },
-                "projectName" to {
-                    description = "Artifact 'name' coordinate (lowercase)"
-                    validator { lowercased(); alphanumeric() }
-                    controller { other("targetPath").value = File(File(other("sourcePath").value).parentFile, value).toString() }
-                    defaultValue = "example"
-                },
-                "projectLabel" to {
-                    description = "Nice project name (human-readable)"
-                    defaultValue = "Example"
-                },
-                "projectGroup" to {
-                    description = "Java package in source code and artifact 'group' coordinate"
-                    validator { javaPackage(); notEndsWith("projectName") }
-                    defaultValue = "com.company.aem"
-                },
                 "instanceAuthorHttpUrl" to {
                     url("http://localhost:4502")
                     optional()
@@ -57,20 +39,6 @@ configure<ForkExtension> {
                     description = "URL to backup directory (SMB/SFTP)"
                     optional()
                 }
-        ))
-    }
-    config {
-        cloneFiles()
-        moveFiles(mapOf(
-                "/com/company/aem/example" to "/{{projectGroup|substitute('.', '/')}}/{{projectName}}",
-                "/com/company/aem" to "/{{projectGroup|substitute('.', '/')}}",
-                "/example" to "/{{projectName}}"
-        ))
-        replaceContents(mapOf(
-                "com.company.aem.example" to "{{projectGroup}}.{{projectName}}",
-                "com.company.aem" to "{{projectGroup}}",
-                "Example" to "{{projectLabel}}",
-                "example" to "{{projectName}}"
         ))
     }
 }

@@ -1,57 +1,92 @@
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent
-
 plugins {
-    id("com.cognifide.aem.bundle")
-    id("com.cognifide.aem.tooling")
     id("com.cognifide.aem.instance")
+    id("com.cognifide.aem.environment")
     id("com.neva.fork")
 }
 
-description = "Example"
-defaultTasks(":instanceSatisfy", ":instanceProvision", ":packageDeploy")
+description = "Gradle AEM Boot"
+defaultTasks(":setup")
 
-group = "com.company.aem"
-version = "1.0.0-SNAPSHOT"
+aem {
+    environment {
+        docker {
+            containers {
+                "httpd" {
+                    resolve {
+                        resolveFiles {
+                            download("http://download.macromedia.com/dispatcher/download/dispatcher-apache2.4-linux-x86_64-4.3.2.tar.gz").then {
+                                copyArchiveFile(it, "**/dispatcher-apache*.so", file("modules/mod_dispatcher.so"))
+                            }
+                        }
+                        ensureDir("cache", "logs")
+                    }
+                    up {
+                        ensureDir("/usr/local/apache2/logs", "/opt/aem/dispatcher/cache/content/example/demo", "/opt/aem/dispatcher/cache/content/example/live")
+                        execShell("Starting HTTPD server", "/usr/local/apache2/bin/httpd -k start")
+                    }
+                    reload {
+                        cleanDir("/opt/aem/dispatcher/cache/content/example/demo", "/opt/aem/dispatcher/cache/content/example/live")
+                        execShell("Restarting HTTPD server", "/usr/local/apache2/bin/httpd -k restart")
+                    }
+                    dev {
+                        watchConfigDir("conf")
+                    }
+                }
+            }
+        }
+        hosts {
+            author("http://author.example.com")
+            publish("http://demo.example.com") { tag("test") }
+            publish("http://example.com") { tag("live") }
+            other("http://dispatcher.example.com")
+        }
+        healthChecks {
+            url("Live site", "http://example.com/en-us.html") { containsText("English US") }
+            url("Demo site", "http://demo.example.com/en-us.html") { containsText("English US") }
+            url("Author module 'Sites'", "http://author.example.com/sites.html") {
+                options { basicCredentials = authorInstance.credentials }
+                containsText("Sites")
+            }
+        }
+    }
 
-repositories {
-    jcenter()
-    maven { url = uri("https://repo.adobe.com/nexus/content/groups/public") }
-}
+    localInstance {
+        install {
+            files {
+                // https://github.com/Cognifide/gradle-aem-plugin#pre-installed-osgi-bundles-and-crx-packages
+            }
+        }
+    }
 
-dependencies {
-    compileOnly( "org.osgi:osgi.cmpn:6.0.0")
-    compileOnly( "org.osgi:org.osgi.core:6.0.0")
-    compileOnly( "javax.servlet:servlet-api:2.5")
-    compileOnly( "javax.servlet:jsp-api:2.0")
-    compileOnly( "javax.jcr:jcr:2.0")
-    compileOnly( "org.slf4j:slf4j-api:1.7.25")
-    compileOnly( "org.apache.geronimo.specs:geronimo-atinject_1.0_spec:1.0")
-    compileOnly( "org.apache.sling:org.apache.sling.api:2.16.4")
-    compileOnly( "org.apache.sling:org.apache.sling.jcr.api:2.4.0")
-    compileOnly( "org.apache.sling:org.apache.sling.models.api:1.3.6")
-    compileOnly( "org.apache.sling:org.apache.sling.settings:1.3.8")
-    compileOnly( "com.google.guava:guava:15.0")
-    compileOnly( "com.google.code.gson:gson:2.8.2")
-    compileOnly( "joda-time:joda-time:2.9.1")
-
-    compileOnly("com.adobe.aem:uber-jar:${Aem.VERSION}:apis")
-}
-
-tasks {
-    withType<Test>().configureEach {
-        failFast = true
-        useJUnitPlatform()
-        testLogging {
-            events = setOf(TestLogEvent.FAILED)
-            exceptionFormat = TestExceptionFormat.SHORT
+    tasks {
+        instanceSatisfy {
+            packages {
+                "dep.vanity-urls" { /* useLocal("pkg/vanityurls-components-1.0.2.zip") */ }
+                "dep.acs-aem-commons" { download("https://github.com/Adobe-Consulting-Services/acs-aem-commons/releases/download/acs-aem-commons-4.0.0/acs-aem-commons-content-4.0.0-min.zip") }
+                "tool.ac-tool" { download("https://repo1.maven.org/maven2/biz/netcentric/cq/tools/accesscontroltool", "accesscontroltool-package/2.3.2/accesscontroltool-package-2.3.2.zip", "accesscontroltool-oakindex-package/2.3.2/accesscontroltool-oakindex-package-2.3.2.zip") }
+                "tool.aem-easy-content-upgrade" { download("https://github.com/valtech/aem-easy-content-upgrade/releases/download/2.0.0/aecu.bundle-2.0.0.zip") }
+                "tool.search-webconsole-plugin" { resolve("com.neva.felix:search-webconsole-plugin:1.2.0") }
+            }
         }
 
-        dependencies {
-            "testImplementation"("org.junit.jupiter:junit-jupiter-api:5.3.2")
-            "testRuntimeOnly"("org.junit.jupiter:junit-jupiter-engine:5.3.2")
-            "testImplementation"("io.wcm:io.wcm.testing.aem-mock.junit5:2.3.2")
+        instanceProvision {
+            // https://github.com/Cognifide/gradle-aem-plugin#task-instanceprovision
         }
+
+        // Here is a desired place for defining custom AEM tasks
+        // https://github.com/Cognifide/gradle-aem-plugin#implement-custom-aem-tasks
+
+        /*
+        register("doSomething") {
+            description = "Does something"
+            doLast {
+                aem.sync {
+                    // Use instance services:
+                    // http, repository, packageManager, osgiFramework, workflowManager, groovyConsole
+                }
+            }
+        }
+        */
     }
 }
 
