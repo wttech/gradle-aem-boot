@@ -21,11 +21,10 @@ aem {
                         ensureDir("cache", "logs")
                     }
                     up {
-                        ensureDir("/usr/local/apache2/logs", "/opt/aem/dispatcher/cache/content/example/demo", "/opt/aem/dispatcher/cache/content/example/live")
+                        ensureDir("/usr/local/apache2/logs")
                         execShell("Starting HTTPD server", "/usr/local/apache2/bin/httpd -k start")
                     }
                     reload {
-                        cleanDir("/opt/aem/dispatcher/cache/content/example/demo", "/opt/aem/dispatcher/cache/content/example/live")
                         execShell("Restarting HTTPD server", "/usr/local/apache2/bin/httpd -k restart")
                     }
                     dev {
@@ -36,13 +35,9 @@ aem {
         }
         hosts {
             author("http://author.example.com")
-            publish("http://demo.example.com") { tag("test") }
-            publish("http://example.com") { tag("live") }
             other("http://dispatcher.example.com")
         }
         healthChecks {
-            url("Live site", "http://example.com/en-us.html") { containsText("English US") }
-            url("Demo site", "http://demo.example.com/en-us.html") { containsText("English US") }
             url("Author module 'Sites'", "http://author.example.com/sites.html") {
                 options { basicCredentials = authorInstance.credentials }
                 containsText("Sites")

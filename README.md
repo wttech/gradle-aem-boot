@@ -81,8 +81,17 @@ Tested on:
 
 ## Tooling
 
-1. Monitoring errors in logs: `sh gradlew :instanceTail`,
-2. Copying JCR content between AEM instances: `sh gradlew :rcp -Prcp.source=http://user:pass@x.x.x.x:4502 -Prcp.target=local-author -Prcp.paths=[/content/example,/content/dam/example]`
+* Generating / updating AEM instance configuration: `sh gradlew :props`,
+* Monitoring errors in logs: `sh gradlew :instanceTail`.
+
+## Further steps
+
+Consider adding project-specific configuration for AEM sites (examples based on [Gradle AEM Multi](https://github.com/Cognifide/gradle-aem-multi)):
+
+* [HTTP Configuration](https://github.com/Cognifide/gradle-aem-multi/tree/master/aem/gradle/environment/httpd/conf) - adding Virtual Hosts and AEM Dispatcher farms,
+* [HTTPD Docker Container Gradle Lifecycle](https://github.com/Cognifide/gradle-aem-multi/blob/master/aem/build.gradle.kts) - section `aem.environment.docker.containers`
+* [Hosts file configuration](https://github.com/Cognifide/gradle-aem-multi/blob/master/aem/build.gradle.kts) - section `aem.environment.hosts`,
+* [Health Checks](https://github.com/Cognifide/gradle-aem-multi/blob/master/aem/build.gradle.kts) - section `aem.environment.healthChecks`.
 
 ## Extending build
 
