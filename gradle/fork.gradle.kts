@@ -19,7 +19,7 @@ configure<ForkExtension> {
                     description = "local - instance will be created on local file system\nremote - connecting to remote instance only"
                     controller { toggle(value == "local", "aemInstanceRunModes", "aemInstanceJvmOpts", "aemLocalInstance*") }
                 },
-                "instanceRunModes" to { text("local,nosamplecontent") },
+                "instanceRunModes" to { text("local") },
                 "instanceJvmOpts" to { text("-server -Xmx2048m -XX:MaxPermSize=512M -Djava.awt.headless=true") },
                 "localInstanceSource" to {
                     description = "Controls how instances will be created (from scratch, backup or automatically determined)"
