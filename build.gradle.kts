@@ -1,7 +1,7 @@
 plugins {
+    id("com.neva.fork")
     id("com.cognifide.aem.instance")
     id("com.cognifide.aem.environment")
-    id("com.neva.fork")
 }
 
 description = "Gradle AEM Boot"
