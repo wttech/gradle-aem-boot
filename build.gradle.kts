@@ -7,6 +7,10 @@ plugins {
 description = "Gradle AEM Boot"
 defaultTasks(":setup")
 
+repositories {
+    jcenter()
+}
+
 aem {
     environment {
         docker {
