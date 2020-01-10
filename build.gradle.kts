@@ -4,12 +4,14 @@ plugins {
     id("com.cognifide.aem.environment")
 }
 
+apply(from = "gradle/fork/props.gradle.kts")
+
 description = "Gradle AEM Boot"
 defaultTasks(":setup")
 
 repositories {
     jcenter()
-    maven { url = uri( "https://dl.bintray.com/neva-dev/maven-public") }
+    maven("https://dl.bintray.com/neva-dev/maven-public")
 }
 
 aem {
@@ -66,7 +68,6 @@ aem {
                 "tool.ac-tool"("https://repo1.maven.org/maven2/biz/netcentric/cq/tools/accesscontroltool", "accesscontroltool-package/2.3.2/accesscontroltool-package-2.3.2.zip", "accesscontroltool-oakindex-package/2.3.2/accesscontroltool-oakindex-package-2.3.2.zip")
                 "tool.aem-easy-content-upgrade"("https://github.com/valtech/aem-easy-content-upgrade/releases/download/2.0.0/aecu.bundle-2.0.0.zip")
                 "tool.search-webconsole-plugin"("com.neva.felix:search-webconsole-plugin:1.2.0")
-
             }
         }
 
@@ -75,5 +76,3 @@ aem {
         }
     }
 }
-
-apply(from = "gradle/fork.gradle.kts")
