@@ -54,8 +54,8 @@ aem {
                 options { basicCredentials = authorInstance.credentials }
                 containsText("Sites")
             }
-            url("Publish site - Home", "http://we-retail.example.com") { containsText("Built for the coldest winter on earth") }
-            url("Publish site - Women", "http://we-retail.example.com/women") { containsText("Women") }
+            url("Publish page 'Home'", "http://we-retail.example.com") { containsText("Built for the coldest winter on earth") }
+            url("Publish page 'Women'", "http://we-retail.example.com/women") { containsText("Women") }
         }
     }
 
