@@ -7,7 +7,7 @@ plugins {
 apply(from = "gradle/fork/props.gradle.kts")
 
 description = "Gradle AEM Boot"
-defaultTasks(":setup")
+defaultTasks(":setup", ":await")
 
 repositories {
     jcenter()
