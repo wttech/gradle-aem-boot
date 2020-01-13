@@ -7,7 +7,7 @@ plugins {
 apply(from = "gradle/fork/props.gradle.kts")
 
 description = "Gradle AEM Boot"
-defaultTasks(":setup")
+defaultTasks(":setup", ":await")
 
 repositories {
     jcenter()
@@ -28,10 +28,14 @@ aem {
                         ensureDir("cache", "logs")
                     }
                     up {
-                        ensureDir("/usr/local/apache2/logs")
+                        ensureDir(
+                                "/usr/local/apache2/logs",
+                                "/opt/aem/dispatcher/cache/content/example/we-retail"
+                        )
                         execShell("Starting HTTPD server", "/usr/local/apache2/bin/httpd -k start")
                     }
                     reload {
+                        cleanDir("/opt/aem/dispatcher/cache/content/example/we-retail")
                         execShell("Restarting HTTPD server", "/usr/local/apache2/bin/httpd -k restart")
                     }
                     dev {
@@ -42,6 +46,7 @@ aem {
         }
         hosts {
             author("http://author.example.com")
+            publish("http://we-retail.example.com")
             other("http://dispatcher.example.com")
         }
         healthChecks {
@@ -49,6 +54,8 @@ aem {
                 options { basicCredentials = authorInstance.credentials }
                 containsText("Sites")
             }
+            url("Publish page 'Home'", "http://we-retail.example.com") { containsText("Built for the coldest winter on earth") }
+            url("Publish page 'Women'", "http://we-retail.example.com/women") { containsText("Women") }
         }
     }
 
@@ -72,7 +79,16 @@ aem {
         }
 
         instanceProvision {
-            // https://github.com/Cognifide/gradle-aem-plugin#task-instanceprovision
+            step("configure-mappings") {
+                condition { instance.publish && once() }
+                action {
+                    sync {
+                        repository {
+                            node("/etc/map/http", configCommonDir.resolve("instance/mapping/we-retail.json"))
+                        }
+                    }
+                }
+            }
         }
     }
 }

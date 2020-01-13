@@ -7,20 +7,20 @@
 
 # AEM Boot
 
-## Description
-
 This project could be used to **boot local AEM instances and AEM dispatcher automatically**.
 
-Documentation for AEM plugin is available in project [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
+As an effect, it sets up:
+
+* <http://we-retail.example.com> - AEM sample content / website.
+* <http://author.example.com> - AEM author instance
+
+Automation used in this project is based on [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
 
 ## Table of Contents
 
 * [Quickstart](#quickstart)
 * [Environment](#environment)
-* [Building](#building)
-* [Tips &amp; tricks](#tips--tricks)
-* [Running tests](#running-tests)
-* [Attaching debugger](#attaching-debugger)
+* [Tooling](#tooling)
 * [Extending build](#extending-build)
 
 ## Quickstart
@@ -61,7 +61,7 @@ Documentation for AEM plugin is available in project [Gradle AEM Plugin](https:/
    or equivalent
    
    ```bash
-   sh gradlew setup
+   sh gradlew setup await
    ```
   
 Repeating command above will:
@@ -78,20 +78,14 @@ Tested on:
 * Adobe AEM 6.5
 * Docker 2.0.0.3
 
-
 ## Tooling
 
-* Generating / updating AEM instance configuration: `sh gradlew :props`,
-* Monitoring errors in logs: `sh gradlew :instanceTail`.
+* Generating / updating AEM instance configuration: `sh gradlew props`,
+* Monitoring errors in logs: `sh gradlew instanceTail`,
+* Copying content between environments/instances: `sh gradlew instanceRcp`,
+* Running content migration Groovy scripts: `sh gradlew instanceGroovyEval`.
 
-## Further steps
-
-Consider adding project-specific configuration for AEM sites (examples based on [Gradle AEM Multi](https://github.com/Cognifide/gradle-aem-multi)):
-
-* [HTTP Configuration](https://github.com/Cognifide/gradle-aem-multi/tree/master/aem/gradle/environment/httpd/conf) - adding Virtual Hosts and AEM Dispatcher farms,
-* [HTTPD Docker Container Gradle Lifecycle](https://github.com/Cognifide/gradle-aem-multi/blob/master/aem/build.gradle.kts) - section `aem.environment.docker.containers`
-* [Hosts file configuration](https://github.com/Cognifide/gradle-aem-multi/blob/master/aem/build.gradle.kts) - section `aem.environment.hosts`,
-* [Health Checks](https://github.com/Cognifide/gradle-aem-multi/blob/master/aem/build.gradle.kts) - section `aem.environment.healthChecks`.
+Review [plugin documentation](https://github.com/Cognifide/gradle-aem-plugin) for more details / how to use tools mentioned above.
 
 ## Extending build
 
