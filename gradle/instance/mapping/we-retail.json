@@ -1,18 +1,22 @@
 {
-
   "jcr:primaryType": "sling:Folder",
   "we-retail.example.com": {
     "jcr:primaryType": "sling:Mapping",
     "sling:internalRedirect": [
       "/content/we-retail/us/en"
     ],
-    "weretail_com_content": {
+    "content": {
       "jcr:primaryType": "sling:Mapping",
       "sling:match": "(.+)$",
       "sling:internalRedirect": [
         "/content/we-retail/us/en/$1",
         "/$1"
       ]
+    },
+    "clientlibs": {
+      "jcr:primaryType": "sling:Mapping",
+      "sling:internalRedirect": "/etc.clientlibs/$1",
+      "sling:match": "etc[.]clientlibs/(.+)"
     },
     "reverse_mapping_content": {
       "jcr:primaryType": "sling:Mapping",

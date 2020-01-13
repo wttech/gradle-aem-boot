@@ -83,11 +83,7 @@ aem {
                 action {
                     sync {
                         repository {
-                            node("/etc/map/http").import(
-                                    configCommonDir.resolve("instance/resources/we-retail.map.json"),
-                                    replace = true,
-                                    replaceProperties = true
-                            )
+                            node("/etc/map/http", configCommonDir.resolve("instance/mapping/we-retail.json"))
                         }
                     }
                 }
