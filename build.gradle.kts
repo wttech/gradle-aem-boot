@@ -79,19 +79,15 @@ aem {
 
         instanceProvision {
             step("configure-mappings") {
-                condition { once() && instance.publish }
+                condition { instance.publish && once() }
                 action {
                     sync {
                         repository {
-                            node("/etc/map/http/we-retail.example.com", mapOf(
-                                    "jcr:primaryType" to "sling:Mapping",
-                                    "sling:internalRedirect" to "/content/we-retail"
-                            ))
-                            node("/etc/map/http/we-retail.example.com/clientlibs", mapOf(
-                                    "jcr:primaryType" to "sling:Mapping",
-                                    "sling:internalRedirect" to "/etc.clientlibs/\$1",
-                                    "sling:match" to "etc[.]clientlibs/(.+)"
-                            ))
+                            node("/etc/map/http").import(
+                                    configCommonDir.resolve("instance/resources/we-retail.map.json"),
+                                    replace = true,
+                                    replaceProperties = true
+                            )
                         }
                     }
                 }

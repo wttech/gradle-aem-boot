@@ -1,0 +1,46 @@
+{
+
+  "jcr:primaryType": "sling:Folder",
+  "we-retail.example.com": {
+    "jcr:primaryType": "sling:Mapping",
+    "sling:internalRedirect": [
+      "/content/we-retail/us/en"
+    ],
+    "weretail_com_content": {
+      "jcr:primaryType": "sling:Mapping",
+      "sling:match": "(.+)$",
+      "sling:internalRedirect": [
+        "/content/we-retail/us/en/$1",
+        "/$1"
+      ]
+    },
+    "reverse_mapping_content": {
+      "jcr:primaryType": "sling:Mapping",
+      "sling:match": "$1",
+      "sling:internalRedirect": [
+        "/content/we-retail/us/en/(.*).html"
+      ]
+    },
+    "reverse_mapping_content_nohtml": {
+      "jcr:primaryType": "sling:Mapping",
+      "sling:match": "$1",
+      "sling:internalRedirect": [
+        "/content/we-retail/us/en/(.*)"
+      ]
+    },
+    "reverse_mapping_root": {
+      "jcr:primaryType": "sling:Mapping",
+      "sling:match": "$",
+      "sling:internalRedirect": [
+        "/content/we-retail/us/en(.html)?"
+      ]
+    }
+  },
+  "we-retail.example.com_root": {
+    "jcr:primaryType": "sling:Mapping",
+    "sling:match": "we-retail.example.com$",
+    "sling:internalRedirect": [
+      "/content/we-retail/us/en.html"
+    ]
+  }
+}
