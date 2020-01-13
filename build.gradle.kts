@@ -28,10 +28,14 @@ aem {
                         ensureDir("cache", "logs")
                     }
                     up {
-                        ensureDir("/usr/local/apache2/logs")
+                        ensureDir(
+                                "/usr/local/apache2/logs",
+                                "/opt/aem/dispatcher/cache/content/example/we-retail"
+                        )
                         execShell("Starting HTTPD server", "/usr/local/apache2/bin/httpd -k start")
                     }
                     reload {
+                        cleanDir("/opt/aem/dispatcher/cache/content/example/we-retail")
                         execShell("Restarting HTTPD server", "/usr/local/apache2/bin/httpd -k restart")
                     }
                     dev {
@@ -42,6 +46,7 @@ aem {
         }
         hosts {
             author("http://author.example.com")
+            publish("http://we-retail.example.com")
             other("http://dispatcher.example.com")
         }
         healthChecks {
@@ -49,6 +54,7 @@ aem {
                 options { basicCredentials = authorInstance.credentials }
                 containsText("Sites")
             }
+            url("Publish site", "http://we-retail.example.com/us/en.html") { containsText("Discover the Finest Gear") }
         }
     }
 
@@ -72,7 +78,24 @@ aem {
         }
 
         instanceProvision {
-            // https://github.com/Cognifide/gradle-aem-plugin#task-instanceprovision
+            step("configure-mappings") {
+                condition { once() && instance.publish }
+                action {
+                    sync {
+                        repository {
+                            node("/etc/map/http/we-retail.example.com", mapOf(
+                                    "jcr:primaryType" to "sling:Mapping",
+                                    "sling:internalRedirect" to "/content/we-retail"
+                            ))
+                            node("/etc/map/http/we-retail.example.com/clientlibs", mapOf(
+                                    "jcr:primaryType" to "sling:Mapping",
+                                    "sling:internalRedirect" to "/etc.clientlibs/\$1",
+                                    "sling:match" to "etc[.]clientlibs/(.+)"
+                            ))
+                        }
+                    }
+                }
+            }
         }
     }
 }
