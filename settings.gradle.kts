@@ -1,3 +1,1 @@
-// Project structure
-
-rootProject.name = "gradle-aem-boot"
+rootProject.name = "aem-boot"
