@@ -11,10 +11,13 @@ This project could be used to **boot local AEM instances and AEM dispatcher auto
 
 As an effect, it sets up:
 
-* <http://we-retail.example.com> - AEM sample content / website.
-* <http://author.example.com> - AEM author instance
+* <http://we-retail.example.com> - AEM sample content / website,
+* <http://author.example.com> - AEM author instance.
 
-Automation used in this project is based on [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin).
+Automation used in this project is based on:
+
+* [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin) - setting local AEM instances running natively,
+* [Gradle Environment Plugin](https://github.com/Cognifide/gradle-environment-plugin) - setting AEM dispatcher running on [Docker](https://www.docker.com).
 
 ## Table of Contents
 
