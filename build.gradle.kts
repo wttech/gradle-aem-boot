@@ -1,7 +1,7 @@
 plugins {
     id("com.neva.fork")
-    id("com.cognifide.aem.instance")
-    id("com.cognifide.aem.environment")
+    id("com.cognifide.aem.instance.local")
+    id("com.cognifide.environment")
 }
 
 apply(from = "gradle/fork/props.gradle.kts")
@@ -45,17 +45,37 @@ aem {
             }
         }
         hosts {
-            author("http://author.example.com")
-            publish("http://we-retail.example.com")
-            other("http://dispatcher.example.com")
+            "http://author.example.com" { tag("author") }
+            "http://we-retail.example.com" { tag("publish") }
+            "http://dispatcher.example.com" { tag("dispatcher") }
         }
         healthChecks {
-            url("Author module 'Sites'", "http://author.example.com/sites.html") {
-                options { basicCredentials = authorInstance.credentials }
-                containsText("Sites")
+            http("Publish page 'Home'", "http://we-retail.example.com", "Built for the coldest winter on earth")
+            http("Publish page 'Women'", "http://we-retail.example.com/women", "Women")
+            http("Author Sites Editor", "http://author.example.com/sites.html") { options { basicCredentials = authorInstance.credentials }; containsText("Sites") }
+        }
+    }
+
+    instance {
+        satisfier {
+            packages {
+                // "dep.vanity-urls"("pkg/vanityurls-components-1.0.2.zip")
+                "dep.acs-aem-commons"("https://github.com/Adobe-Consulting-Services/acs-aem-commons/releases/download/acs-aem-commons-4.0.0/acs-aem-commons-content-4.0.0-min.zip")
+                "tool.ac-tool"("https://repo1.maven.org/maven2/biz/netcentric/cq/tools/accesscontroltool", "accesscontroltool-package/2.3.2/accesscontroltool-package-2.3.2.zip", "accesscontroltool-oakindex-package/2.3.2/accesscontroltool-oakindex-package-2.3.2.zip")
+                "tool.aem-easy-content-upgrade"("https://github.com/valtech/aem-easy-content-upgrade/releases/download/2.0.0/aecu.bundle-2.0.0.zip")
+                "tool.search-webconsole-plugin"("com.neva.felix:search-webconsole-plugin:1.2.0")
             }
-            url("Publish page 'Home'", "http://we-retail.example.com") { containsText("Built for the coldest winter on earth") }
-            url("Publish page 'Women'", "http://we-retail.example.com/women") { containsText("Women") }
+        }
+
+        provisioner {
+            step("configure-mappings") {
+                condition { instance.publish && once() }
+                sync {
+                    repository {
+                        import("/etc/map/http", configDir.get().asFile.resolve("mapping/we-retail.json"))
+                    }
+                }
+            }
         }
     }
 
@@ -68,27 +88,20 @@ aem {
     }
 
     tasks {
-        instanceSatisfy {
-            packages {
-                 // "dep.vanity-urls"("pkg/vanityurls-components-1.0.2.zip")
-                "dep.acs-aem-commons"("https://github.com/Adobe-Consulting-Services/acs-aem-commons/releases/download/acs-aem-commons-4.0.0/acs-aem-commons-content-4.0.0-min.zip")
-                "tool.ac-tool"("https://repo1.maven.org/maven2/biz/netcentric/cq/tools/accesscontroltool", "accesscontroltool-package/2.3.2/accesscontroltool-package-2.3.2.zip", "accesscontroltool-oakindex-package/2.3.2/accesscontroltool-oakindex-package-2.3.2.zip")
-                "tool.aem-easy-content-upgrade"("https://github.com/valtech/aem-easy-content-upgrade/releases/download/2.0.0/aecu.bundle-2.0.0.zip")
-                "tool.search-webconsole-plugin"("com.neva.felix:search-webconsole-plugin:1.2.0")
-            }
+        environmentUp {
+            mustRunAfter(instanceUp, instanceSatisfy, instanceProvision, instanceSetup)
+        }
+        environmentAwait {
+            mustRunAfter(instanceAwait)
         }
 
-        instanceProvision {
-            step("configure-mappings") {
-                condition { instance.publish && once() }
-                action {
-                    sync {
-                        repository {
-                            node("/etc/map/http", configCommonDir.resolve("instance/mapping/we-retail.json"))
-                        }
-                    }
-                }
+        /*
+        register("doSomething") {
+            doLast {
+                // implement own task using Gradle AEM DSL
+                // aem.authorInstance.sync { /* ... */ }
             }
         }
+        */
     }
 }
