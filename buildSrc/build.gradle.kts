@@ -1,9 +1,7 @@
 repositories {
     mavenLocal()
     jcenter()
-    maven("https://plugins.gradle.org/m2")
-    maven("https://dl.bintray.com/cognifide/maven-public")
-    maven("https://dl.bintray.com/neva-dev/maven-public")
+    gradlePluginPortal()
 }
 
 dependencies {
