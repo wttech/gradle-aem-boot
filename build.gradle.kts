@@ -15,47 +15,6 @@ repositories {
 }
 
 aem {
-    environment {
-        docker {
-            containers {
-                "httpd" {
-                    resolve {
-                        resolveFiles {
-                            download("http://download.macromedia.com/dispatcher/download/dispatcher-apache2.4-linux-x86_64-4.3.3.tar.gz").then {
-                                copyArchiveFile(it, "**/dispatcher-apache*.so", file("modules/mod_dispatcher.so"))
-                            }
-                        }
-                        ensureDir("cache", "logs")
-                    }
-                    up {
-                        ensureDir(
-                                "/usr/local/apache2/logs",
-                                "/opt/aem/dispatcher/cache/content/example/we-retail"
-                        )
-                        execShell("Starting HTTPD server", "/usr/local/apache2/bin/httpd -k start")
-                    }
-                    reload {
-                        cleanDir("/opt/aem/dispatcher/cache/content/example/we-retail")
-                        execShell("Restarting HTTPD server", "/usr/local/apache2/bin/httpd -k restart")
-                    }
-                    dev {
-                        watchConfigDir("conf")
-                    }
-                }
-            }
-        }
-        hosts {
-            "http://author.example.com" { tag("author") }
-            "http://we-retail.example.com" { tag("publish") }
-            "http://dispatcher.example.com" { tag("dispatcher") }
-        }
-        healthChecks {
-            http("Publish page 'Home'", "http://we-retail.example.com", "Built for the coldest winter on earth")
-            http("Publish page 'Women'", "http://we-retail.example.com/women", "Women")
-            http("Author Sites Editor", "http://author.example.com/sites.html") { options { basicCredentials = authorInstance.credentials }; containsText("Sites") }
-        }
-    }
-
     instance {
         satisfier {
             packages {
@@ -86,22 +45,63 @@ aem {
             }
         }
     }
+}
 
-    tasks {
-        environmentUp {
-            mustRunAfter(instanceUp, instanceSatisfy, instanceProvision, instanceSetup)
-        }
-        environmentAwait {
-            mustRunAfter(instanceAwait)
-        }
-
-        /*
-        register("doSomething") {
-            doLast {
-                // implement own task using Gradle AEM DSL
-                // aem.authorInstance.sync { /* ... */ }
+environment {
+    docker {
+        containers {
+            "httpd" {
+                resolve {
+                    resolveFiles {
+                        download("http://download.macromedia.com/dispatcher/download/dispatcher-apache2.4-linux-x86_64-4.3.3.tar.gz").then {
+                            copyArchiveFile(it, "**/dispatcher-apache*.so", file("modules/mod_dispatcher.so"))
+                        }
+                    }
+                    ensureDir("cache", "logs")
+                }
+                up {
+                    ensureDir(
+                            "/usr/local/apache2/logs",
+                            "/opt/aem/dispatcher/cache/content/example/we-retail"
+                    )
+                    execShell("Starting HTTPD server", "/usr/local/apache2/bin/httpd -k start")
+                }
+                reload {
+                    cleanDir("/opt/aem/dispatcher/cache/content/example/we-retail")
+                    execShell("Restarting HTTPD server", "/usr/local/apache2/bin/httpd -k restart")
+                }
+                dev {
+                    watchConfigDir("conf")
+                }
             }
         }
-        */
     }
+    hosts {
+        "http://author.example.com" { tag("author") }
+        "http://we-retail.example.com" { tag("publish") }
+        "http://dispatcher.example.com" { tag("dispatcher") }
+    }
+    healthChecks {
+        http("Publish page 'Home'", "http://we-retail.example.com", "Built for the coldest winter on earth")
+        http("Publish page 'Women'", "http://we-retail.example.com/women", "Women")
+        http("Author Sites Editor", "http://author.example.com/sites.html") { options { basicCredentials = aem.authorInstance.credentials }; containsText("Sites") }
+    }
+}
+
+tasks {
+    environmentUp {
+        mustRunAfter(instanceUp, instanceSatisfy, instanceProvision, instanceSetup)
+    }
+    environmentAwait {
+        mustRunAfter(instanceAwait)
+    }
+
+    /*
+    register("doSomething") {
+        doLast {
+            // implement own task using Gradle AEM DSL
+            // aem.authorInstance.sync { /* ... */ }
+        }
+    }
+    */
 }
