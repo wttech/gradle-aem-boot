@@ -18,7 +18,7 @@ services:
       {% endif %}
       - "{{ docker.workPath }}/httpd/logs:/usr/local/apache2/logs"
       - "{{ docker.configPath }}/httpd/conf:/usr/local/apache2/conf"
-    {% if docker.runtime.hostInternalIp is not empty %}
+    {% if docker.runtime.hostInternalIpMissing %}
     extra_hosts:
       - "host.docker.internal:{{ docker.runtime.hostInternalIp }}"
     {% endif %}
