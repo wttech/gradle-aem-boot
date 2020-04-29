@@ -4,19 +4,6 @@ import com.neva.gradle.fork.ForkExtension
 
 configure<ForkExtension> {
     properties {
-        define("Build", mapOf(
-                "webpackMode" to {
-                    label = "Webpack Mode"
-                    description = "Controls optimization of front-end resources (CSS/JS/assets) "
-                    select("dev", "prod")
-                },
-                "testBrowser" to {
-                    label = "Test Browser"
-                    description = "Browser used when running functional tests powered by Cypress"
-                    select("auto", "chrome", "chrome:canary", "chromium", "electron", "edge", "edge:canary", "firefox", "firefox:nightly")
-                }
-        ))
-
         define("Instance", mapOf(
                 "instanceType" to {
                     label = "Type"
@@ -129,6 +116,7 @@ configure<ForkExtension> {
                     description = "Turns on/off temporary disablement of assets processing for package deployment time.\n" +
                             "Useful to avoid redundant rendition generation when package contains renditions synchronized earlier."
                     checkbox(true)
+                    dynamic()
                 }
         ))
 
