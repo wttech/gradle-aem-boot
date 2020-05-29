@@ -16,21 +16,13 @@ repositories {
 
 aem {
     instance {
-        satisfier {
-            packages {
-                // "dep.vanity-urls"("pkg/vanityurls-components-1.0.2.zip")
-                "dep.acs-aem-commons"("https://github.com/Adobe-Consulting-Services/acs-aem-commons/releases/download/acs-aem-commons-4.0.0/acs-aem-commons-content-4.0.0-min.zip")
-                "tool.ac-tool"(
-                        "https://repo1.maven.org/maven2/biz/netcentric/cq/tools/accesscontroltool/accesscontroltool-package/2.3.2/accesscontroltool-package-2.3.2.zip",
-                        "https://repo1.maven.org/maven2/biz/netcentric/cq/tools/accesscontroltool/accesscontroltool-oakindex-package/2.3.2/accesscontroltool-oakindex-package-2.3.2.zip"
-                )
-                "tool.aem-easy-content-upgrade"("https://github.com/valtech/aem-easy-content-upgrade/releases/download/2.0.0/aecu.bundle-2.0.0.zip")
-                "tool.search-webconsole-plugin"("com.neva.felix:search-webconsole-plugin:1.2.0")
-            }
+        provisioner {
+            enableCrxDe()
+            deployPackage("com.neva.felix:search-webconsole-plugin:1.2.0")
         }
 
         provisioner {
-            step("configure-mappings") {
+            step("configureMappings") {
                 condition { instance.publish && once() }
                 sync {
                     repository {
@@ -93,7 +85,7 @@ environment {
 
 tasks {
     environmentUp {
-        mustRunAfter(instanceUp, instanceSatisfy, instanceProvision, instanceSetup)
+        mustRunAfter(instanceUp, instanceProvision, instanceSetup)
     }
     environmentAwait {
         mustRunAfter(instanceAwait)
