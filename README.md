@@ -1,9 +1,9 @@
-![Cognifide logo](docs/cognifide-logo.png)
+![WTT logo](docs/wtt-logo.png)
 
 [![Gradle Status](https://gradleupdate.appspot.com/Cognifide/gradle-aem-single/status.svg?random=123)](https://gradleupdate.appspot.com/Cognifide/gradle-aem-single/status)
-[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/Cognifide/gradle-aem-single.svg?label=License)](http://www.apache.org/licenses/)
+[![Apache License, Version 2.0, January 2004](https://img.shields.io/github/license/wttech/gradle-aem-single.svg?label=License)](http://www.apache.org/licenses/)
 
-[![Gradle AEM Plugin logo](docs/logo.png)](https://github.com/Cognifide/gradle-aem-plugin)
+[![Gradle AEM Plugin logo](docs/logo.png)](https://github.com/wttech/gradle-aem-plugin)
 
 # AEM Boot
 
@@ -16,8 +16,8 @@ As an effect, it sets up:
 
 Automation used in this project is based on:
 
-* [Gradle AEM Plugin](https://github.com/Cognifide/gradle-aem-plugin) - setting local AEM instances running natively,
-* [Gradle Environment Plugin](https://github.com/Cognifide/gradle-environment-plugin) - setting AEM dispatcher running on [Docker](https://www.docker.com).
+* [Gradle AEM Plugin](https://github.com/wttech/gradle-aem-plugin) - setting local AEM instances running natively,
+* [Gradle Environment Plugin](https://github.com/wttech/gradle-environment-plugin) - setting AEM dispatcher running on [Docker](https://www.docker.com).
 
 ## Table of Contents
 
@@ -31,7 +31,7 @@ Automation used in this project is based on:
 1. Clone project using command:
 
     ```bash
-    git clone https://github.com/Cognifide/gradle-aem-boot.git && cd gradle-aem-boot
+    git clone https://github.com/wttech/gradle-aem-boot.git && cd gradle-aem-boot
     ```
     
 2. Setup user specific AEM configuration using command:
@@ -88,7 +88,7 @@ Tested on:
 * Copying content between environments/instances: `sh gradlew instanceRcp`,
 * Running content migration Groovy scripts: `sh gradlew instanceGroovyEval`.
 
-Review [plugin documentation](https://github.com/Cognifide/gradle-aem-plugin) for more details / how to use tools mentioned above.
+Review [plugin documentation](https://github.com/wttech/gradle-aem-plugin) for more details / how to use tools mentioned above.
 
 ## Extending build
 

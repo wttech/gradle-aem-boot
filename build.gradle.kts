@@ -36,7 +36,7 @@ aem {
     localInstance {
         install {
             files {
-                // https://github.com/Cognifide/gradle-aem-plugin#pre-installed-osgi-bundles-and-crx-packages
+                // https://github.com/wttech/gradle-aem-plugin#pre-installed-osgi-bundles-and-crx-packages
             }
         }
     }
